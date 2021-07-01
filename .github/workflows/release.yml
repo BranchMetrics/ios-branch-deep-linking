@@ -173,5 +173,17 @@ jobs:
       - name: Export to ios-spm repository
         uses: actions/github-script@v4
         with:
+          github-token: ${{ secrets.BRANCHLET_ACCESS_TOKEN }}
           script: |
-            console.log('TODO: This 👆');
+            const tag = '${{ github.event.inputs.tag }}';
+            console.log(`Exporting release ${tag} to ios-branch-sdk-spm repo.`);
+
+            await github.actions.createWorkflowDispatch({
+              owner: 'BranchMetrics',
+              repo: 'ios-branch-sdk-spm',
+              workflow_id: 'import.yml',
+              ref: 'main',
+              inputs: {
+                tag,
+              },
+            });
